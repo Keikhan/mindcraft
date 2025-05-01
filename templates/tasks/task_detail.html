@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ task.title }} - MidCraft{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'task_list' %}">Tasks</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ task.title }}</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-md-6 text-md-end">
+        <a href="{% url 'home_page' %}" class="btn btn-secondary me-2">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <a href="{% url 'task_update' task.pk %}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Edit Task
+        </a>
+        <a href="{% url 'task_delete' task.pk %}" class="btn btn-outline-danger">
+            <i class="fas fa-trash"></i> Delete
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">{{ task.title }}</h3>
+                <span class="badge bg-{% if task.priority == 'high' %}danger{% elif task.priority == 'medium' %}warning{% else %}success{% endif %}">
+                    {{ task.get_priority_display }} Priority
+                </span>
+            </div>
+            <div class="card-body">
+                {% if task.description %}
+                    <h5 class="card-title">Description</h5>
+                    <p class="card-text">{{ task.description|linebreaks }}</p>
+                {% else %}
+                    <p class="text-muted">No description provided.</p>
+                {% endif %}
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h5>Task Details</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Status:</span>
+                                <span class="badge bg-{% if task.completed %}success{% else %}secondary{% endif %}">
+                                    {% if task.completed %}Completed{% else %}In Progress{% endif %}
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Created:</span>
+                                <span>{{ task.created_date|date:"M d, Y" }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Due Date:</span>
+                                <span>
+                                    {% if task.due_date %}
+                                        {{ task.due_date|date:"M d, Y" }}
+                                        {% if not task.completed and task.due_date|date:'Y-m-d' < now|date:'Y-m-d' %}
+                                            <span class="badge bg-danger ms-2">Overdue</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">No due date</span>
+                                    {% endif %}
+                                </span>
+                            </li>
+                            {% if task.due_date %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Due Time:</span>
+                                <span>
+                                    {{ task.due_date|date:"g:i A" }}
+                                </span>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <form method="POST" action="{% url 'task_update' task.pk %}" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="title" value="{{ task.title }}">
+                    <input type="hidden" name="description" value="{{ task.description }}">
+                    <input type="hidden" name="due_date" value="{{ task.due_date|date:'Y-m-d' }}">
+                    {% if task.due_date %}
+                    <input type="hidden" name="due_time" value="{{ task.due_date|date:'H:i' }}">
+                    {% endif %}
+                    <input type="hidden" name="priority" value="{{ task.priority }}">
+                    <input type="hidden" name="completed" value="{% if task.completed %}False{% else %}True{% endif %}">
+                    <button type="submit" class="btn btn-{% if task.completed %}secondary{% else %}success{% endif %}">
+                        {% if task.completed %}
+                            <i class="fas fa-times-circle"></i> Mark as Incomplete
+                        {% else %}
+                            <i class="fas fa-check-circle"></i> Mark as Complete
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'task_update' task.pk %}" class="btn btn-outline-primary">
+                        <i class="fas fa-edit"></i> Edit Task
+                    </a>
+                    <a href="{% url 'task_delete' task.pk %}" class="btn btn-outline-danger">
+                        <i class="fas fa-trash"></i> Delete Task
+                    </a>
+                    <a href="{% url 'task_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-list"></i> View All Tasks
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-dark">
+                        <i class="fas fa-tachometer-alt"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

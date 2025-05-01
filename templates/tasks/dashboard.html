@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - MidCraft{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h1 class="display-5">Welcome, {{ user.username }}!</h1>
+        <p class="lead">Here's your task dashboard for {{ month }} {{ year }}</p>
+    </div>
+    <div class="col-md-6 text-md-end">
+        <a href="{% url 'home_page' %}" class="btn btn-secondary me-2">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <a href="{% url 'task_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> New Task
+        </a>
+        <a href="{% url 'task_list' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-list"></i> All Tasks
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Calendar View -->
+    <div class="col-md-7">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0 d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fas fa-calendar"></i> {{ month }} {{ year }}
+                    </div>
+                    <div class="calendar-navigation">
+                        <a href="{% url 'dashboard' %}?month={{ prev_month }}&year={{ prev_year }}" class="btn btn-sm btn-light me-1">
+                            <i class="fas fa-chevron-left"></i> Prev
+                        </a>
+                        <a href="{% url 'dashboard' %}?month={{ current_month }}&year={{ current_year }}" class="btn btn-sm btn-light me-1">
+                            Today
+                        </a>
+                        <a href="{% url 'dashboard' %}?month={{ next_month }}&year={{ next_year }}" class="btn btn-sm btn-light">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </div>
+                </h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered calendar-table">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mon</th>
+                            <th>Tue</th>
+                            <th>Wed</th>
+                            <th>Thu</th>
+                            <th>Fri</th>
+                            <th>Sat</th>
+                            <th>Sun</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for week in calendar_data %}
+                            <tr class="calendar-row">
+                                {% for day in week %}
+                                    <td class="calendar-day {% if day.day == '' %}empty-day{% endif %}">
+                                        {% if day.day != '' %}
+                                            <div class="day-number">{{ day.day }}</div>
+                                            
+                                            <!-- Task dots -->
+                                            {% if day.tasks %}
+                                                <div class="task-dots">
+                                                    {% for task in day.tasks %}
+                                                        <a href="{% url 'task_detail' task.pk %}" class="task-dot priority-{{ task.priority }} {% if task.completed %}completed{% endif %}" 
+                                                           data-bs-toggle="tooltip" data-bs-placement="top" title="{{ task.title }}"></a>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <!-- Priority Legend -->
+                <div class="calendar-legend mt-3">
+                    <span class="legend-item">
+                        <span class="legend-dot priority-high"></span> High Priority
+                    </span>
+                    <span class="legend-item">
+                        <span class="legend-dot priority-medium"></span> Medium Priority
+                    </span>
+                    <span class="legend-item">
+                        <span class="legend-dot priority-low"></span> Low Priority
+                    </span>
+                    <span class="legend-item">
+                        <span class="legend-dot completed"></span> Completed
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Lists -->
+    <div class="col-md-5">
+        <!-- Overdue Tasks -->
+        {% if overdue_tasks %}
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-exclamation-circle"></i> Overdue Tasks
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for task in overdue_tasks %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="{% url 'task_detail' task.pk %}">{{ task.title }}</a>
+                                    <div class="small text-muted">
+                                        Due: {{ task.due_date|date:"M d, Y" }} 
+                                        <span class="text-danger">{{ task.due_date|date:"g:i A" }}</span>
+                                    </div>
+                                </div>
+                                <span class="badge bg-{{ task.priority }} rounded-pill">{{ task.get_priority_display }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Upcoming Tasks -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-calendar-day"></i> Upcoming Tasks
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                {% if upcoming_tasks %}
+                    <ul class="list-group list-group-flush">
+                        {% for task in upcoming_tasks %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="{% url 'task_detail' task.pk %}">{{ task.title }}</a>
+                                    <div class="small text-muted">
+                                        Due: {{ task.due_date|date:"M d, Y" }} 
+                                        <span class="text-primary">{{ task.due_date|date:"g:i A" }}</span>
+                                    </div>
+                                </div>
+                                <span class="badge bg-{{ task.priority }} rounded-pill">{{ task.get_priority_display }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="p-3 text-center">
+                        <p class="mb-0">No upcoming tasks.</p>
+                        <a href="{% url 'task_create' %}" class="btn btn-sm btn-outline-primary mt-2">Add Task</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- All Tasks -->
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-tasks"></i> All Tasks
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group task-list">
+                    {% if all_tasks %}
+                        {% for task in all_tasks %}
+                            <a href="{% url 'task_detail' task.pk %}" class="list-group-item list-group-item-action {% if task.completed %}text-decoration-line-through text-muted{% endif %}">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ task.title }}</h6>
+                                    <span class="task-indicator priority-{{ task.priority }} {% if task.completed %}completed{% endif %}"></span>
+                                </div>
+                                {% if task.due_date %}
+                                    <small class="text-muted">
+                                        Due: {{ task.due_date|date:"M d, Y" }} at 
+                                        <span class="{% if task.priority == 'high' %}text-danger{% elif task.priority == 'medium' %}text-primary{% else %}text-success{% endif %}">
+                                            {{ task.due_date|date:"g:i A" }}
+                                        </span>
+                                    </small>
+                                {% else %}
+                                    <small class="text-muted">No due date</small>
+                                {% endif %}
+                            </a>
+                        {% endfor %}
+                    {% else %}
+                        <div class="p-3 text-center">
+                            <p class="mb-0">No tasks yet.</p>
+                            <a href="{% url 'task_create' %}" class="btn btn-sm btn-outline-primary mt-2">Create Your First Task</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .calendar-table {
+        table-layout: fixed;
+    }
+    .calendar-day {
+        height: 110px;
+        vertical-align: top;
+        padding: 5px;
+    }
+    .empty-day {
+        background-color: #f8f9fa;
+    }
+    .day-number {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    /* Task Dots */
+    .task-dots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 4px;
+    }
+    .task-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    .task-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    .priority-high {
+        background-color: #dc3545;
+    }
+    .priority-medium {
+        background-color: #0d6efd;
+    }
+    .priority-low {
+        background-color: #28a745;
+    }
+    .completed {
+        opacity: 0.5;
+        border: 1px solid #6c757d;
+    }
+    
+    /* Legend */
+    .calendar-legend {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+    .legend-item {
+        display: flex;
+        align-items: center;
+        font-size: 0.8rem;
+    }
+    .legend-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+    }
+    
+    /* Task List */
+    .task-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %} 

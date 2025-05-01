@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile_user.username }}'s Profile - MidCraft{% endblock %}
+
+{% block styles %}
+<style>
+    .profile-header {
+        background: linear-gradient(135deg, #4a6bdf 0%, #6e40aa 100%);
+        color: white;
+        padding: 40px 0;
+        border-radius: 10px 10px 0 0;
+        margin-bottom: 30px;
+    }
+    
+    .profile-pic {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 5px solid white;
+        object-fit: cover;
+        margin: 0 auto 20px;
+        display: block;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .profile-info-card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+    }
+    
+    .profile-info-card:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-header-custom {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+        padding: 15px 20px;
+    }
+    
+    .badge-major {
+        background-color: #4a6bdf;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    .badge-degree {
+        background-color: #6e40aa;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    .info-item {
+        display: flex;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f1f1;
+    }
+    
+    .info-item:last-child {
+        border-bottom: none;
+    }
+    
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        background-color: #f8f9fa;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        color: #4a6bdf;
+    }
+    
+    .info-content {
+        flex: 1;
+    }
+    
+    .info-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 3px;
+    }
+    
+    .info-value {
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <a href="{% url 'community_home' %}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i> Back to Community
+            </a>
+        </div>
+    </div>
+    
+    <div class="profile-header text-center">
+        <img src="{{ profile_user.profile.get_image_url }}" alt="{{ profile_user.username }}" class="profile-pic">
+        <h1 class="mb-2">{{ profile_user.username }}</h1>
+        <div class="d-flex justify-content-center gap-2">
+            {% if profile_user.profile.major %}
+                <span class="badge-major">
+                    {{ profile_user.profile.get_major_display }}
+                </span>
+            {% endif %}
+            
+            {% if profile_user.profile.degree %}
+                <span class="badge-degree">
+                    {{ profile_user.profile.get_degree_display }}
+                </span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="profile-info-card">
+                <div class="card-header-custom">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i> Basic Information</h5>
+                </div>
+                <div class="card-body">
+                    {% if profile_user.profile.location %}
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="info-content">
+                                <div class="info-label">Location</div>
+                                <div class="info-value">{{ profile_user.profile.location }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if profile_user.profile.age %}
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-birthday-cake"></i>
+                            </div>
+                            <div class="info-content">
+                                <div class="info-label">Age</div>
+                                <div class="info-value">{{ profile_user.profile.age }} years old</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if profile_user.email %}
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="info-content">
+                                <div class="info-label">Email</div>
+                                <div class="info-value">{{ profile_user.email }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="profile-info-card">
+                <div class="card-header-custom">
+                    <h5 class="mb-0"><i class="fas fa-share-alt me-2"></i> Social Media</h5>
+                </div>
+                <div class="card-body">
+                    {% if profile_user.profile.instagram %}
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fab fa-instagram"></i>
+                            </div>
+                            <div class="info-content">
+                                <div class="info-label">Instagram</div>
+                                <div class="info-value">
+                                    <a href="https://instagram.com/{{ profile_user.profile.instagram }}" target="_blank" class="text-decoration-none">
+                                        {{ profile_user.profile.instagram }}
+                                        <i class="fas fa-external-link-alt ms-1 small"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-user-secret fa-3x mb-3"></i>
+                            <p>No social media accounts shared</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="profile-info-card">
+                <div class="card-header-custom">
+                    <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i> Academic Information</h5>
+                </div>
+                <div class="card-body">
+                    {% if profile_user.profile.major or profile_user.profile.degree %}
+                        {% if profile_user.profile.major %}
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Field of Study</div>
+                                    <div class="info-value">{{ profile_user.profile.get_major_display }}</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if profile_user.profile.degree %}
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Degree</div>
+                                    <div class="info-value">{{ profile_user.profile.get_degree_display }}</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-user-graduate fa-3x mb-3"></i>
+                            <p>No academic information shared</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

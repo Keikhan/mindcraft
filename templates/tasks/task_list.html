@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}All Tasks - MidCraft{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h1>All Tasks</h1>
+    </div>
+    <div class="col-md-6 text-md-end">
+        <a href="{% url 'home_page' %}" class="btn btn-secondary me-2">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <a href="{% url 'task_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> New Task
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">Your Tasks</h3>
+            </div>
+            <div class="card-body p-0">
+                {% if tasks %}
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 50px;"></th>
+                                <th>Title</th>
+                                <th>Due Date & Time</th>
+                                <th>Priority</th>
+                                <th style="width: 150px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in tasks %}
+                                <tr class="{% if task.completed %}table-light{% endif %}">
+                                    <td class="text-center">
+                                        {% if task.completed %}
+                                            <i class="fas fa-check-circle text-success"></i>
+                                        {% else %}
+                                            <i class="far fa-circle text-muted"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'task_detail' task.pk %}" class="{% if task.completed %}text-decoration-line-through{% endif %}">
+                                            {{ task.title }}
+                                        </a>
+                                        {% if task.description %}
+                                            <div class="small text-muted">{{ task.description|truncatechars:50 }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if task.due_date %}
+                                            <div>{{ task.due_date|date:"M d, Y" }}</div>
+                                            <small class="text-muted">{{ task.due_date|date:"g:i A" }}</small>
+                                        {% else %}
+                                            <span class="text-muted">No due date</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{% if task.priority == 'high' %}danger{% elif task.priority == 'medium' %}warning{% else %}success{% endif %}">
+                                            {{ task.get_priority_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'task_update' task.pk %}" class="btn btn-sm btn-outline-primary me-1">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'task_delete' task.pk %}" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="p-4 text-center">
+                        <p>You don't have any tasks yet.</p>
+                        <a href="{% url 'task_create' %}" class="btn btn-primary mt-2">
+                            <i class="fas fa-plus-circle"></i> Create Your First Task
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

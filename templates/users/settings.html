@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - MindCraft{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title">Account Settings</h3>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="#password-section" class="list-group-item list-group-item-action active" id="password-tab">
+                        <i class="fas fa-key me-2"></i> Change Password
+                    </a>
+                    <a href="#theme-section" class="list-group-item list-group-item-action" id="theme-tab">
+                        <i class="fas fa-palette me-2"></i> Theme Settings
+                    </a>
+                    <a href="{% url 'profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user me-2"></i> Profile Settings
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <!-- Password Change Section -->
+        <div class="card mb-4" id="password-section">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title">Change Password</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{% url 'password_change' %}">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_old_password" class="form-label">Current Password</label>
+                        <input type="password" name="old_password" class="form-control" id="id_old_password" required>
+                        {% if form.old_password.errors %}
+                            <div class="text-danger">
+                                {% for error in form.old_password.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_new_password1" class="form-label">New Password</label>
+                        <input type="password" name="new_password1" class="form-control" id="id_new_password1" required>
+                        {% if form.new_password1.errors %}
+                            <div class="text-danger">
+                                {% for error in form.new_password1.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            <ul class="small">
+                                <li>Your password can't be too similar to your other personal information.</li>
+                                <li>Your password must contain at least 8 characters.</li>
+                                <li>Your password can't be a commonly used password.</li>
+                                <li>Your password can't be entirely numeric.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_new_password2" class="form-label">Confirm New Password</label>
+                        <input type="password" name="new_password2" class="form-control" id="id_new_password2" required>
+                        {% if form.new_password2.errors %}
+                            <div class="text-danger">
+                                {% for error in form.new_password2.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Theme Settings Section -->
+        <div class="card d-none" id="theme-section">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title">Theme Settings</h3>
+            </div>
+            <div class="card-body">
+                <p class="lead">Select your preferred theme:</p>
+                
+                <div class="theme-options">
+                    <div class="row mb-4">
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="card theme-card" data-theme="default">
+                                <div class="theme-preview theme-default"></div>
+                                <div class="card-body">
+                                    <h5 class="theme-name">Default</h5>
+                                    <p class="theme-description small">Blue & purple gradients with light background</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="card theme-card" data-theme="purple">
+                                <div class="theme-preview theme-purple"></div>
+                                <div class="card-body">
+                                    <h5 class="theme-name">Purple</h5>
+                                    <p class="theme-description small">Rich purple tones with light lavender accents</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="card theme-card" data-theme="yellow">
+                                <div class="theme-preview theme-yellow"></div>
+                                <div class="card-body">
+                                    <h5 class="theme-name">Yellow</h5>
+                                    <p class="theme-description small">Bright yellow and orange with cream background</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="card theme-card" data-theme="dark">
+                                <div class="theme-preview theme-dark"></div>
+                                <div class="card-body">
+                                    <h5 class="theme-name">Dark</h5>
+                                    <p class="theme-description small">Dark mode with purple accents</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-success d-none" id="theme-success-alert">
+                        <i class="fas fa-check-circle me-2"></i> Theme updated successfully!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .theme-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    
+    .theme-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .theme-card.active {
+        border: 3px solid var(--primary-color);
+        transform: translateY(-5px);
+    }
+    
+    .theme-preview {
+        height: 100px;
+        border-radius: 5px 5px 0 0;
+    }
+    
+    .theme-options .card-body {
+        padding: 1rem;
+    }
+    
+    .theme-name {
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+    
+    .theme-description {
+        color: var(--text-muted);
+        margin-bottom: 0;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tab switching functionality
+        const passwordTab = document.getElementById('password-tab');
+        const themeTab = document.getElementById('theme-tab');
+        const passwordSection = document.getElementById('password-section');
+        const themeSection = document.getElementById('theme-section');
+        
+        passwordTab.addEventListener('click', function(e) {
+            e.preventDefault();
+            passwordTab.classList.add('active');
+            themeTab.classList.remove('active');
+            passwordSection.classList.remove('d-none');
+            themeSection.classList.add('d-none');
+        });
+        
+        themeTab.addEventListener('click', function(e) {
+            e.preventDefault();
+            themeTab.classList.add('active');
+            passwordTab.classList.remove('active');
+            themeSection.classList.remove('d-none');
+            passwordSection.classList.add('d-none');
+        });
+        
+        // Theme switching functionality
+        const themeCards = document.querySelectorAll('.theme-card');
+        const themeSuccess = document.getElementById('theme-success-alert');
+        const currentTheme = localStorage.getItem('theme') || 'default';
+        
+        // Mark the current theme as active
+        themeCards.forEach(card => {
+            const theme = card.getAttribute('data-theme');
+            if (theme === currentTheme) {
+                card.classList.add('active');
+            }
+            
+            card.addEventListener('click', function() {
+                // Remove active class from all cards
+                themeCards.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked card
+                this.classList.add('active');
+                
+                // Get the theme name
+                const selectedTheme = this.getAttribute('data-theme');
+                
+                // Dispatch theme change event
+                window.dispatchEvent(new CustomEvent('themeChange', {
+                    detail: { theme: selectedTheme }
+                }));
+                
+                // Show success message
+                themeSuccess.classList.remove('d-none');
+                setTimeout(() => {
+                    themeSuccess.classList.add('d-none');
+                }, 3000);
+            });
+        });
+    });
+</script>
+{% endblock %} 

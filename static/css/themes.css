@@ -1,0 +1,277 @@
+/* Theme System CSS */
+:root {
+    /* Default/Light Theme */
+    --primary-color: #4a6bdf;
+    --secondary-color: #6e40aa;
+    --background-color: #f8f9fa;
+    --card-background: #ffffff;
+    --text-color: #212529;
+    --text-muted: #6c757d;
+    --border-color: #e9ecef;
+    --accent-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #fd7e14;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --hover-effect: translateY(-5px);
+}
+
+/* Purple Theme */
+body.theme-purple {
+    --primary-color: #9c27b0;
+    --secondary-color: #673ab7;
+    --background-color: #f8f1fb;
+    --card-background: #ffffff;
+    --text-color: #3c0d42;
+    --text-muted: #6c4d79;
+    --border-color: #e1bee7;
+    --accent-color: #4a148c;
+    --danger-color: #e91e63;
+    --warning-color: #ff9800;
+    --shadow-color: rgba(156, 39, 176, 0.2);
+    --hover-effect: translateY(-5px);
+}
+
+/* Yellow Theme */
+body.theme-yellow {
+    --primary-color: #ff9800;
+    --secondary-color: #ff6f00;
+    --background-color: #fffdf5;
+    --card-background: #ffffff;
+    --text-color: #5d4037;
+    --text-muted: #8d6e63;
+    --border-color: #fff9c4;
+    --accent-color: #ff6f00;
+    --danger-color: #f44336;
+    --warning-color: #ff5722;
+    --shadow-color: rgba(255, 193, 7, 0.2);
+    --hover-effect: translateY(-5px);
+}
+
+/* Dark Theme */
+body.theme-dark {
+    --primary-color: #bb86fc;
+    --secondary-color: #3700b3;
+    --background-color: #121212;
+    --card-background: #1e1e1e;
+    --text-color: #ffffff;
+    --text-muted: #bbbbbb;
+    --border-color: #333333;
+    --accent-color: #03dac6;
+    --danger-color: #ff7597;
+    --warning-color: #ffb74d;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --hover-effect: translateY(-5px);
+}
+
+/* Apply theme colors to elements */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card {
+    background-color: var(--card-background);
+    border-color: var(--border-color);
+    box-shadow: 0 4px 6px var(--shadow-color);
+    transition: all 0.3s ease;
+}
+
+.card-header.bg-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.btn-success {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.text-danger {
+    color: var(--danger-color) !important;
+}
+
+/* Navbar adjustments for dark theme */
+body.theme-dark .navbar {
+    background-color: #1e1e1e !important;
+}
+
+body.theme-dark .navbar-dark .navbar-nav .nav-link {
+    color: #ffffff;
+}
+
+body.theme-dark .dropdown-item {
+    color: #ffffff;
+}
+
+body.theme-dark .dropdown-item:hover {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+body.theme-dark .list-group-item {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-color: #333333;
+}
+
+body.theme-dark .list-group-item.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+body.theme-dark .form-control {
+    background-color: #333333;
+    color: #ffffff;
+    border-color: #444444;
+}
+
+body.theme-dark .form-control:focus {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+body.theme-dark .form-text {
+    color: #bbbbbb !important;
+}
+
+body.theme-dark .alert-success {
+    background-color: rgba(3, 218, 198, 0.2);
+    color: #ffffff;
+    border-color: rgba(3, 218, 198, 0.4);
+}
+
+/* Fix Productivity Tips section in dark mode */
+body.theme-dark .tip-card {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    border-left-color: var(--accent-color);
+}
+
+body.theme-dark .text-muted,
+body.theme-dark p.text-muted {
+    color: #e0e0e0 !important;
+}
+
+body.theme-dark h3, 
+body.theme-dark h2,
+body.theme-dark .lead {
+    color: #ffffff;
+}
+
+body.theme-dark .fas.fa-lightbulb,
+body.theme-dark .fas.fa-check-circle {
+    color: var(--accent-color);
+}
+
+.navbar {
+    background-color: var(--card-background);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: var(--text-color);
+}
+
+.dropdown-menu {
+    background-color: var(--card-background);
+    border-color: var(--border-color);
+}
+
+.dropdown-item {
+    color: var(--text-color);
+}
+
+.dropdown-item:hover {
+    background-color: var(--background-color);
+}
+
+footer.bg-dark {
+    background-color: var(--card-background) !important;
+    color: var(--text-color) !important;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Theme switch buttons */
+.theme-switcher {
+    display: inline-flex;
+    margin: 10px 0;
+}
+
+.theme-option {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.theme-option:hover,
+.theme-option.active {
+    transform: scale(1.2);
+    border-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.theme-default {
+    background: linear-gradient(135deg, #4a6bdf 0%, #6e40aa 100%);
+}
+
+.theme-purple {
+    background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+}
+
+.theme-yellow {
+    background: linear-gradient(135deg, #ff9800 0%, #ff6f00 100%);
+}
+
+.theme-dark {
+    background: linear-gradient(135deg, #424242 0%, #212121 100%);
+    border: 2px solid #bb86fc;
+}
+
+/* Theme preview styles */
+.theme-preview.theme-default {
+    background: linear-gradient(135deg, #4a6bdf 0%, #6e40aa 100%);
+}
+
+.theme-preview.theme-purple {
+    background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+}
+
+.theme-preview.theme-yellow {
+    background: linear-gradient(135deg, #ff9800 0%, #ff6f00 100%);
+}
+
+.theme-preview.theme-dark {
+    background: linear-gradient(135deg, #424242 0%, #212121 100%);
+    border-bottom: 2px solid #bb86fc;
+} 

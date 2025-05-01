@@ -1,0 +1,573 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pomodoro Timer - MidCraft{% endblock %}
+
+{% block styles %}
+<style>
+    .timer-display {
+        font-size: 6rem;
+        font-weight: 700;
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .timer-controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .timer-btn {
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .timer-btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .timer-type {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .timer-type-btn {
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-weight: 500;
+    }
+    
+    .timer-type-btn.active {
+        background-color: #0d6efd;
+        color: white;
+    }
+    
+    .progress-container {
+        width: 100%;
+        height: 8px;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        height: 100%;
+        background-color: #0d6efd;
+        border-radius: 4px;
+        transition: width 1s linear;
+    }
+    
+    .task-selection {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    
+    .task-item {
+        cursor: pointer;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        transition: all 0.2s ease;
+    }
+    
+    .task-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .task-item.selected {
+        background-color: #e7f1ff;
+        border-left: 4px solid #0d6efd;
+    }
+    
+    .priority-badge {
+        font-size: 0.8rem;
+        padding: 3px 8px;
+        border-radius: 20px;
+    }
+    
+    .settings-panel {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+    }
+    
+    .break-indicator {
+        background-color: #28a745;
+    }
+    
+    .work-indicator {
+        background-color: #0d6efd;
+    }
+    
+    .long-break-indicator {
+        background-color: #6f42c1;
+    }
+</style>
+<script src="{% static 'sounds/notification.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h1 class="display-5 mb-0">Pomodoro Timer</h1>
+        <p class="lead text-muted">Focus on your tasks with time management</p>
+    </div>
+    <div class="col-md-6 text-md-end">
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary me-2">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="{% url 'analytics' %}" class="btn btn-outline-primary">
+            <i class="fas fa-chart-bar"></i> Analytics
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Timer Section -->
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <!-- Timer Type Selection -->
+                <div class="timer-type">
+                    <button class="btn timer-type-btn active" data-timer-type="work">
+                        <i class="fas fa-play me-1"></i> Work
+                    </button>
+                    <button class="btn timer-type-btn" data-timer-type="short-break">
+                        <i class="fas fa-coffee me-1"></i> Short Break
+                    </button>
+                    <button class="btn timer-type-btn" data-timer-type="long-break">
+                        <i class="fas fa-couch me-1"></i> Long Break
+                    </button>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="progress-container">
+                    <div class="progress-bar" id="timer-progress" style="width: 100%;"></div>
+                </div>
+                
+                <!-- Timer Display -->
+                <div class="timer-display" id="timer-display">25:00</div>
+                
+                <!-- Timer Controls -->
+                <div class="timer-controls">
+                    <button class="btn btn-primary timer-btn" id="start-btn">
+                        <i class="fas fa-play me-2"></i> Start
+                    </button>
+                    <button class="btn btn-secondary timer-btn" id="pause-btn" disabled>
+                        <i class="fas fa-pause me-2"></i> Pause
+                    </button>
+                    <button class="btn btn-danger timer-btn" id="reset-btn">
+                        <i class="fas fa-redo me-2"></i> Reset
+                    </button>
+                </div>
+                
+                <!-- Current Task -->
+                <div class="current-task mt-4">
+                    <h5>Currently working on:</h5>
+                    <div class="alert alert-info" id="current-task-display">
+                        <i class="fas fa-info-circle me-2"></i> No task selected
+                    </div>
+                </div>
+                
+                <!-- Pomodoro Cycle -->
+                <div class="pomodoro-cycle mt-4">
+                    <h5>Pomodoro Cycle:</h5>
+                    <div class="d-flex justify-content-between">
+                        <span class="badge rounded-pill work-indicator">&nbsp;</span>
+                        <span class="badge rounded-pill break-indicator">&nbsp;</span>
+                        <span class="badge rounded-pill work-indicator">&nbsp;</span>
+                        <span class="badge rounded-pill break-indicator">&nbsp;</span>
+                        <span class="badge rounded-pill work-indicator">&nbsp;</span>
+                        <span class="badge rounded-pill break-indicator">&nbsp;</span>
+                        <span class="badge rounded-pill work-indicator">&nbsp;</span>
+                        <span class="badge rounded-pill long-break-indicator">&nbsp;</span>
+                    </div>
+                    <div class="progress mt-2" style="height: 5px;">
+                        <div class="progress-bar" role="progressbar" style="width: 0%;" id="cycle-progress"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Timer Settings -->
+        <div class="card shadow-sm mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">Timer Settings</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="work-time" class="form-label">Work Time (minutes)</label>
+                            <input type="number" class="form-control" id="work-time" value="25" min="1" max="60">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="short-break-time" class="form-label">Short Break (minutes)</label>
+                            <input type="number" class="form-control" id="short-break-time" value="5" min="1" max="30">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="long-break-time" class="form-label">Long Break (minutes)</label>
+                            <input type="number" class="form-control" id="long-break-time" value="15" min="5" max="60">
+                        </div>
+                    </div>
+                </div>
+                <div class="d-grid">
+                    <button class="btn btn-primary" id="apply-settings">Apply Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Task Selection -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Select a Task</h5>
+            </div>
+            <div class="card-body">
+                {% if tasks %}
+                <div class="task-selection">
+                    {% for task in tasks %}
+                    <div class="task-item" data-task-id="{{ task.id }}">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-1">{{ task.title }}</h6>
+                            {% if task.priority == 'high' %}
+                            <span class="badge bg-danger priority-badge">High</span>
+                            {% elif task.priority == 'medium' %}
+                            <span class="badge bg-primary priority-badge">Medium</span>
+                            {% else %}
+                            <span class="badge bg-success priority-badge">Low</span>
+                            {% endif %}
+                        </div>
+                        <p class="text-muted small mb-0">
+                            <i class="far fa-calendar-alt me-1"></i> 
+                            Due: {{ task.due_date|date:"M j, Y" }} 
+                            {% if task.due_date %}
+                            at {{ task.due_date|date:"g:i A" }}
+                            {% endif %}
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i> You don't have any active tasks.
+                    <a href="{% url 'task_create' %}" class="alert-link">Create a new task</a> to get started.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Pomodoro Tips -->
+        <div class="card shadow-sm mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">Pomodoro Technique Tips</h5>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li>Work for 25 minutes (one "Pomodoro")</li>
+                    <li>Take a short 5-minute break</li>
+                    <li>After 4 Pomodoros, take a longer 15-30 minute break</li>
+                    <li>Focus on one task per Pomodoro</li>
+                    <li>If you get distracted, restart the Pomodoro</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Timer variables
+        let timer;
+        let timeLeft;
+        let isRunning = false;
+        let currentTimerType = 'work';
+        let pomodoroCount = 0;
+        
+        // Timer settings (in minutes)
+        let workTime = 25;
+        let shortBreakTime = 5;
+        let longBreakTime = 15;
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const startBtn = document.getElementById('start-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const applySettingsBtn = document.getElementById('apply-settings');
+        const progressBar = document.getElementById('timer-progress');
+        const cycleProgress = document.getElementById('cycle-progress');
+        const currentTaskDisplay = document.getElementById('current-task-display');
+        const timerTypeBtns = document.querySelectorAll('.timer-type-btn');
+        const taskItems = document.querySelectorAll('.task-item');
+        
+        // Input Elements
+        const workTimeInput = document.getElementById('work-time');
+        const shortBreakTimeInput = document.getElementById('short-break-time');
+        const longBreakTimeInput = document.getElementById('long-break-time');
+        
+        // Selected task
+        let selectedTaskId = null;
+        let selectedTaskTitle = null;
+        
+        // Set initial timer
+        setTimer(workTime);
+        
+        // Event Listeners
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        applySettingsBtn.addEventListener('click', applySettings);
+        
+        // Add event listeners to timer type buttons
+        timerTypeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                timerTypeBtns.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Set timer type
+                currentTimerType = this.dataset.timerType;
+                resetTimer();
+            });
+        });
+        
+        // Add event listeners to task items
+        taskItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove selected class from all tasks
+                taskItems.forEach(t => t.classList.remove('selected'));
+                // Add selected class to clicked task
+                this.classList.add('selected');
+                
+                // Set selected task
+                selectedTaskId = this.dataset.taskId;
+                selectedTaskTitle = this.querySelector('h6').textContent;
+                
+                // Update current task display
+                currentTaskDisplay.innerHTML = `<i class="fas fa-tasks me-2"></i> ${selectedTaskTitle}`;
+            });
+        });
+        
+        // Timer Functions
+        function startTimer() {
+            if (isRunning) return;
+            
+            isRunning = true;
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+            
+            // Get total time for progress bar calculation
+            const totalTime = timeLeft;
+            
+            timer = setInterval(function() {
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timerComplete();
+                    return;
+                }
+                
+                timeLeft--;
+                updateTimerDisplay();
+                
+                // Update progress bar
+                const progressPercentage = (timeLeft / totalTime) * 100;
+                progressBar.style.width = `${progressPercentage}%`;
+                
+            }, 1000);
+        }
+        
+        function pauseTimer() {
+            clearInterval(timer);
+            isRunning = false;
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+        }
+        
+        function resetTimer() {
+            clearInterval(timer);
+            isRunning = false;
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            
+            // Set timer based on current timer type
+            if (currentTimerType === 'work') {
+                setTimer(workTime);
+            } else if (currentTimerType === 'short-break') {
+                setTimer(shortBreakTime);
+            } else {
+                setTimer(longBreakTime);
+            }
+            
+            progressBar.style.width = '100%';
+        }
+        
+        function setTimer(minutes) {
+            timeLeft = minutes * 60;
+            updateTimerDisplay();
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        function timerComplete() {
+            // Play notification sound
+            try {
+                // Try to play using Web Audio API
+                if (typeof playNotificationSound === 'function') {
+                    playNotificationSound();
+                } else {
+                    // Fallback to basic audio element
+                    const audio = new Audio();
+                    audio.volume = 0.5;
+                    
+                    // Try to play notification sound if it exists
+                    audio.src = '/static/sounds/notification.mp3';
+                    
+                    // If there's an error, use the Web Audio API
+                    audio.onerror = function() {
+                        // Add script dynamically if not already loaded
+                        if (!document.getElementById('notification-sound-script')) {
+                            const script = document.createElement('script');
+                            script.id = 'notification-sound-script';
+                            script.src = '/static/sounds/notification.js';
+                            script.onload = function() {
+                                if (typeof playNotificationSound === 'function') {
+                                    playNotificationSound();
+                                }
+                            };
+                            document.head.appendChild(script);
+                        }
+                    };
+                    
+                    audio.play().catch(function(error) {
+                        console.log('Audio play error, using alternative:', error);
+                        // Add script dynamically if not already loaded
+                        if (!document.getElementById('notification-sound-script')) {
+                            const script = document.createElement('script');
+                            script.id = 'notification-sound-script';
+                            script.src = '/static/sounds/notification.js';
+                            script.onload = function() {
+                                if (typeof playNotificationSound === 'function') {
+                                    playNotificationSound();
+                                }
+                            };
+                            document.head.appendChild(script);
+                        }
+                    });
+                }
+            } catch(e) {
+                console.error('Failed to play notification sound:', e);
+            }
+            
+            // Show browser notification if available
+            if ("Notification" in window) {
+                if (Notification.permission === "granted") {
+                    const msg = currentTimerType === 'work' ? 'Take a break!' : 'Back to work!';
+                    new Notification("Timer Complete", { body: msg });
+                } else if (Notification.permission !== "denied") {
+                    Notification.requestPermission();
+                }
+            }
+            
+            // Update timer based on current type
+            if (currentTimerType === 'work') {
+                pomodoroCount++;
+                
+                // Update cycle progress
+                const cyclePercentage = (pomodoroCount % 4) * 25;
+                cycleProgress.style.width = `${cyclePercentage}%`;
+                
+                // After 4 pomodoros, suggest a long break
+                if (pomodoroCount % 4 === 0) {
+                    currentTimerType = 'long-break';
+                    // Update active button
+                    timerTypeBtns.forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.dataset.timerType === 'long-break') {
+                            btn.classList.add('active');
+                        }
+                    });
+                    setTimer(longBreakTime);
+                } else {
+                    currentTimerType = 'short-break';
+                    // Update active button
+                    timerTypeBtns.forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.dataset.timerType === 'short-break') {
+                            btn.classList.add('active');
+                        }
+                    });
+                    setTimer(shortBreakTime);
+                }
+            } else {
+                currentTimerType = 'work';
+                // Update active button
+                timerTypeBtns.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.timerType === 'work') {
+                        btn.classList.add('active');
+                    }
+                });
+                setTimer(workTime);
+            }
+            
+            // Reset progress bar
+            progressBar.style.width = '100%';
+        }
+        
+        function applySettings() {
+            // Validate inputs
+            const newWorkTime = parseInt(workTimeInput.value);
+            const newShortBreakTime = parseInt(shortBreakTimeInput.value);
+            const newLongBreakTime = parseInt(longBreakTimeInput.value);
+            
+            if (newWorkTime < 1 || newWorkTime > 60) {
+                alert('Work time should be between 1 and 60 minutes');
+                return;
+            }
+            
+            if (newShortBreakTime < 1 || newShortBreakTime > 30) {
+                alert('Short break should be between 1 and 30 minutes');
+                return;
+            }
+            
+            if (newLongBreakTime < 5 || newLongBreakTime > 60) {
+                alert('Long break should be between 5 and 60 minutes');
+                return;
+            }
+            
+            // Update settings
+            workTime = newWorkTime;
+            shortBreakTime = newShortBreakTime;
+            longBreakTime = newLongBreakTime;
+            
+            // Reset timer with new settings
+            resetTimer();
+            
+            // Show confirmation
+            alert('Settings updated!');
+        }
+    });
+</script>
+{% endblock %} 

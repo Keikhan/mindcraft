@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - MindCraft{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title">{{ user.username }}'s Profile</h3>
+            </div>
+            <div class="card-body text-center">
+                <img class="rounded-circle account-img mb-3" src="{{ user.profile.get_image_url }}" alt="Profile Image" style="width: 150px; height: 150px; object-fit: cover;">
+                <h2 class="account-heading">{{ user.username }}</h2>
+                <p class="text-secondary">{{ user.email }}</p>
+                {% if user.profile.major %}
+                    <p><i class="fas fa-graduation-cap"></i> Major: {{ user.profile.get_major_display }}</p>
+                {% endif %}
+                {% if user.profile.degree %}
+                    <p><i class="fas fa-user-graduate"></i> Degree: {{ user.profile.get_degree_display }}</p>
+                {% endif %}
+                {% if user.profile.location %}
+                    <p><i class="fas fa-map-marker-alt"></i> {{ user.profile.location }}</p>
+                {% endif %}
+                {% if user.profile.age %}
+                    <p><i class="fas fa-birthday-cake"></i> Age: {{ user.profile.age }}</p>
+                {% endif %}
+                {% if user.profile.instagram %}
+                    <p><i class="fab fa-instagram"></i> <a href="https://instagram.com/{{ user.profile.instagram }}" target="_blank">{{ user.profile.instagram }}</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title">Update Profile</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">Profile Info</legend>
+                        
+                        <div class="mb-3">
+                            {{ u_form.username.label_tag }}
+                            <div class="form-control">{{ u_form.username }}</div>
+                            {% if u_form.username.errors %}
+                                <div class="text-danger">
+                                    {% for error in u_form.username.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ u_form.email.label_tag }}
+                            <div class="form-control">{{ u_form.email }}</div>
+                            {% if u_form.email.errors %}
+                                <div class="text-danger">
+                                    {% for error in u_form.email.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ p_form.image.id_for_label }}" class="form-label">Profile Picture</label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    {{ p_form.image }}
+                                </div>
+                            </div>
+                            {% if p_form.image.errors %}
+                                <div class="text-danger">
+                                    {% for error in p_form.image.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="mt-2 text-muted small">Current: {{ user.profile.image.name }}</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ p_form.major.label_tag }}
+                            <div class="form-control">{{ p_form.major }}</div>
+                            {% if p_form.major.errors %}
+                                <div class="text-danger">
+                                    {% for error in p_form.major.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">{{ p_form.major.help_text }}</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ p_form.degree.label_tag }}
+                            <div class="form-control">{{ p_form.degree }}</div>
+                            {% if p_form.degree.errors %}
+                                <div class="text-danger">
+                                    {% for error in p_form.degree.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">{{ p_form.degree.help_text }}</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ p_form.location.label_tag }}
+                            <div class="form-control">{{ p_form.location }}</div>
+                            {% if p_form.location.errors %}
+                                <div class="text-danger">
+                                    {% for error in p_form.location.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">{{ p_form.location.help_text }}</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ p_form.age.label_tag }}
+                            <div class="form-control">{{ p_form.age }}</div>
+                            {% if p_form.age.errors %}
+                                <div class="text-danger">
+                                    {% for error in p_form.age.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">{{ p_form.age.help_text }}</small>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ p_form.instagram.label_tag }}
+                            <div class="form-control">{{ p_form.instagram }}</div>
+                            {% if p_form.instagram.errors %}
+                                <div class="text-danger">
+                                    {% for error in p_form.instagram.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">{{ p_form.instagram.help_text }}</small>
+                        </div>
+                    </fieldset>
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Login - MindCraft{% endblock %}
+
+{% block styles %}
+<style>
+    .login-container {
+        max-width: 450px;
+        margin: 40px auto;
+    }
+    
+    .login-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+    
+    .login-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        padding: 30px;
+        text-align: center;
+    }
+    
+    .login-logo {
+        font-size: 28px;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 10px;
+    }
+    
+    .login-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 16px;
+    }
+    
+    .login-body {
+        padding: 40px 30px;
+    }
+    
+    .form-floating {
+        margin-bottom: 20px;
+    }
+    
+    .form-floating label {
+        color: var(--text-muted);
+    }
+    
+    .login-btn {
+        width: 100%;
+        padding: 12px;
+        font-weight: 600;
+        border-radius: 8px;
+        margin-top: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .login-footer {
+        text-align: center;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+        margin-top: 20px;
+    }
+    
+    .login-footer a {
+        color: var(--primary-color);
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    
+    .login-footer a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="card login-card">
+        <div class="login-header">
+            <div class="login-logo">MindCraft</div>
+            <div class="login-subtitle">Sign in to your account</div>
+        </div>
+        <div class="login-body">
+            <form method="POST">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger mb-4">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <div class="form-floating">
+                    <input type="text" name="username" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="id_username" placeholder="Username" required>
+                    <label for="id_username">Username</label>
+                    {% if form.username.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.username.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-floating">
+                    <input type="password" name="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" id="id_password" placeholder="Password" required>
+                    <label for="id_password">Password</label>
+                    {% if form.password.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <button class="btn btn-primary login-btn" type="submit">
+                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                </button>
+            </form>
+            
+            <div class="login-footer">
+                <p class="mb-0">Don't have an account? <a href="{% url 'register' %}">Create one now</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

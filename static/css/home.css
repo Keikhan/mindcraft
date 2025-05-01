@@ -1,0 +1,344 @@
+/* Home Page Specific Styles */
+.hero-section {
+    background: linear-gradient(135deg, #4a6bdf 0%, #6e40aa 100%);
+    color: white;
+    padding: 60px 0;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+
+.hero-text h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.hero-text p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.hero-image {
+    max-height: 250px;
+}
+
+/* Motivational Quote Styles */
+.motivation-quote-section {
+    height: 800px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+    background: transparent;
+    border-radius: 15px;
+}
+
+.motivation-quote-wrapper {
+    padding: 30px;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.motivation-quote {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #4a6bdf;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+    font-style: italic;
+    transition: opacity 1s ease-in-out;
+}
+
+/* Motivational Carousel Styles */
+.motivation-carousel-section {
+    margin-bottom: 40px;
+}
+
+.motivation-carousel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.motivation-image-container {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+}
+
+.motivation-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 1s ease-in-out;
+}
+
+.motivation-quote-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Feature Cards */
+.feature-card {
+    transition: transform 0.3s ease;
+    margin-bottom: 20px;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #4a6bdf;
+}
+
+/* Stats and Mentor Section */
+.stats-card {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    height: 100%;
+}
+
+.stats-header {
+    padding: 15px 20px;
+    font-weight: 600;
+}
+
+.stats-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.stats-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.progress-circle {
+    position: relative;
+    margin: 20px auto;
+    width: 120px;
+    height: 120px;
+}
+
+.progress-circle-back {
+    fill: none;
+    stroke: #eee;
+    stroke-width: 10;
+}
+
+.progress-circle-front {
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    transition: stroke-dashoffset 0.5s;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.mentor-task {
+    padding: 15px;
+    border-left: 4px solid #dc3545;
+    margin-bottom: 10px;
+    background-color: rgba(220, 53, 69, 0.05);
+    transition: transform 0.2s;
+}
+
+.mentor-task:hover {
+    transform: translateX(5px);
+}
+
+.mentor-task-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.tip-card {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border-left: 4px solid #28a745;
+}
+
+/* Achievements */
+.achievement-card {
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    background-color: #f8f9fa;
+    transition: all 0.3s;
+}
+
+.achievement-unlocked {
+    background-color: rgba(40, 167, 69, 0.1);
+    border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+.achievement-locked {
+    opacity: 0.7;
+}
+
+.achievement-icon {
+    font-size: 1.8rem;
+    margin-right: 15px;
+    color: #6c757d;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.achievement-unlocked .achievement-icon {
+    color: gold;
+}
+
+/* Animation for the star icon */
+.achievement-unlocked .fa-star {
+    animation: spin-star 3s linear infinite;
+    color: gold;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+}
+
+@keyframes spin-star {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    25% {
+        transform: rotate(90deg) scale(1.2);
+    }
+    50% {
+        transform: rotate(180deg) scale(1);
+    }
+    75% {
+        transform: rotate(270deg) scale(1.2);
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+/* Animation for the trophy icon */
+.achievement-unlocked .fa-trophy {
+    animation: bounce-trophy 2s ease-in-out infinite;
+    color: gold;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+}
+
+@keyframes bounce-trophy {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-5px) scale(1.2);
+    }
+}
+
+/* Animation for the fire icon */
+.achievement-unlocked .fa-fire {
+    animation: flame 1.5s ease-in-out infinite alternate;
+    color: orangered;
+    text-shadow: 0 0 10px rgba(255, 69, 0, 0.7);
+}
+
+@keyframes flame {
+    0% {
+        transform: scale(1) rotate(-5deg);
+        text-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
+    }
+    25% {
+        transform: scale(1.1) rotate(0deg);
+    }
+    50% {
+        transform: scale(1.15) rotate(5deg);
+        text-shadow: 0 0 15px rgba(255, 69, 0, 0.8), 0 0 20px rgba(255, 165, 0, 0.5);
+    }
+    75% {
+        transform: scale(1.1) rotate(0deg);
+    }
+    100% {
+        transform: scale(1) rotate(-5deg);
+        text-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
+    }
+}
+
+.achievement-progress {
+    height: 5px;
+    margin-top: 10px;
+}
+
+/* Achievement glow effects */
+.achievement-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.star-glow {
+    box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.7);
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+}
+
+.trophy-glow {
+    box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.7);
+    animation: pulse-glow 3s ease-in-out infinite alternate;
+}
+
+.fire-glow {
+    box-shadow: 0 0 15px 5px rgba(255, 69, 0, 0.7);
+    animation: pulse-glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-glow {
+    0% {
+        opacity: 0.5;
+        box-shadow: 0 0 10px 2px rgba(255, 215, 0, 0.5);
+    }
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 20px 10px rgba(255, 215, 0, 0.8);
+    }
+}
+
+/* Customize fire glow animation */
+.fire-glow {
+    animation: fire-pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes fire-pulse {
+    0% {
+        opacity: 0.5;
+        box-shadow: 0 0 10px 2px rgba(255, 69, 0, 0.5);
+    }
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 20px 10px rgba(255, 69, 0, 0.8);
+    }
+} 

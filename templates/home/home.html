@@ -1,0 +1,349 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}MindCraft - Task Management Platform{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section mb-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-md-7 hero-text">
+                <h1 class="display-4">Manage Your Tasks with MindCraft</h1>
+                <p class="lead mb-4">The ultimate task management platform that helps you stay organized, focused, and productive.</p>
+                <div class="d-flex flex-wrap">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg me-3 mb-3">
+                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                        </a>
+                    {% else %}
+                        <a href="{% url 'register' %}" class="btn btn-light btn-lg me-3 mb-3">
+                            <i class="fas fa-user-plus me-2"></i>Sign Up Free
+                        </a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg mb-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-5 text-center">
+                <img src="{% static 'img/motivation.webp' %}" alt="Task Management" class="img-fluid hero-image" onerror="this.src='https://via.placeholder.com/400x300?text=MidCraft'">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Motivational Quote Section -->
+<section class="motivation-quote-section">
+    <div class="container">
+        <div class="motivation-quote-wrapper">
+            <h2 id="motivationQuote" class="motivation-quote">"The only way to do great work is to love what you do."</h2>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Features Section -->
+    <section class="mb-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Powerful Features to Boost Your Productivity</h2>
+            <p class="text-muted">Everything you need to manage your tasks effectively</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <h4 class="card-title">Task Management</h4>
+                        <p class="card-text">Create, organize, and track your tasks with ease. Set priorities, due dates, and categories.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h4 class="card-title">Calendar View</h4>
+                        <p class="card-text">Visualize your tasks in a calendar to better plan your day, week, and month.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4 class="card-title">Progress Analytics</h4>
+                        <p class="card-text">Track your productivity and task completion rates with intuitive analytics.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% if user.is_authenticated %}
+    <!-- Dashboard Preview for authenticated users -->
+    <section class="mb-5">
+        <div class="row">
+            <!-- Analytics Section -->
+            <div class="col-lg-6">
+                <h3 class="fw-bold mb-4">Your Productivity Analytics</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card stats-card">
+                            <div class="card-header bg-primary text-white stats-header">
+                                Productivity Score
+                            </div>
+                            <div class="card-body text-center">
+                                <div class="progress-circle">
+                                    <svg width="120" height="120" viewBox="0 0 120 120">
+                                        <circle class="progress-circle-back" cx="60" cy="60" r="50"></circle>
+                                        <circle class="progress-circle-front" cx="60" cy="60" r="50" style="stroke: {% if task_stats.productivity_score >= 70 %}#28a745{% elif task_stats.productivity_score >= 40 %}#fd7e14{% else %}#dc3545{% endif %}; stroke-dasharray: 314; stroke-dashoffset: {{ 314|add:task_stats.productivity_score|add:'-100'|add:'-100'|add:'-114' }}"></circle>
+                                    </svg>
+                                    <div class="progress-text">{{ task_stats.productivity_score }}%</div>
+                                </div>
+                                <p class="mb-0 text-muted">Based on your task completion and consistency</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card stats-card">
+                            <div class="card-header bg-success text-white stats-header">
+                                Task Completion
+                            </div>
+                            <div class="card-body text-center">
+                                <div class="stats-value">{{ task_stats.completion_rate }}%</div>
+                                <div class="stats-label mb-3">Tasks Completed</div>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ task_stats.completion_rate }}%" aria-valuenow="{{ task_stats.completion_rate }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="d-flex justify-content-between text-muted">
+                                    <small>{{ task_stats.completed }} of {{ task_stats.total }} tasks</small>
+                                    <small>{{ task_stats.overdue }} overdue</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mentor Section -->
+            <div class="col-lg-6">
+                <h3 class="fw-bold mb-4">Task Mentor Suggestions</h3>
+                <div class="card stats-card">
+                    <div class="card-header bg-danger text-white stats-header">
+                        Priority Tasks to Focus On
+                    </div>
+                    <div class="card-body">
+                        {% if mentor_tasks %}
+                            {% for task in mentor_tasks %}
+                                <div class="mentor-task">
+                                    <div class="mentor-task-title">{{ task.title }}</div>
+                                    <div class="small text-muted">
+                                        Due: {{ task.due_date|date:"M d, Y" }} 
+                                        <span class="text-danger">{{ task.due_date|date:"g:i A" }}</span>
+                                        {% if task.due_date|date:"Y-m-d" < now|date:"Y-m-d" %}
+                                            <span class="badge bg-danger ms-2">Overdue</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="mt-2">
+                                        <a href="{% url 'task_detail' task.pk %}" class="btn btn-sm btn-outline-primary">View Task</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-4">
+                                <div class="mb-3"><i class="fas fa-check-circle text-success fa-3x"></i></div>
+                                <h5>No high priority tasks pending!</h5>
+                                <p class="text-muted mb-0">You're all caught up with your important tasks.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievements Section -->
+    <section class="mb-5">
+        <h3 class="fw-bold mb-4">Your Achievements</h3>
+        <div class="row">
+            {% for achievement in achievements %}
+            <div class="col-md-4 mb-3">
+                <div class="achievement-card d-flex align-items-center {% if achievement.unlocked %}achievement-unlocked{% else %}achievement-locked{% endif %}">
+                    <div class="achievement-icon">
+                        <i class="fas fa-{{ achievement.icon }}"></i>
+                        {% if achievement.unlocked %}
+                            {% if achievement.icon == 'star' %}
+                                <div class="achievement-glow star-glow"></div>
+                            {% elif achievement.icon == 'trophy' %}
+                                <div class="achievement-glow trophy-glow"></div>
+                            {% elif achievement.icon == 'fire' %}
+                                <div class="achievement-glow fire-glow"></div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="mb-0">{{ achievement.title }}</h5>
+                        <p class="text-muted mb-0">{{ achievement.description }}</p>
+                        {% if not achievement.unlocked %}
+                            <div class="progress achievement-progress">
+                                <div class="progress-bar" role="progressbar" style="width: {{ achievement.progress }}%" aria-valuenow="{{ achievement.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        {% else %}
+                            <p class="text-success mb-0 mt-1"><small><i class="fas fa-check-circle"></i> Completed</small></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Productivity Tips Section -->
+    <section class="mb-5">
+        <div class="text-center mb-5">
+            <h3 class="fw-bold">Productivity Tips</h3>
+            <p class="text-muted">Boost your efficiency with these proven strategies</p>
+        </div>
+        <div class="row">
+            {% for tip in productivity_tips %}
+                {% if forloop.counter0|divisibleby:2 %}
+                    <div class="col-md-6">
+                        <div class="tip-card">
+                            <i class="fas fa-lightbulb text-success me-2"></i> {{ tip }}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-md-6">
+                        <div class="tip-card">
+                            <i class="fas fa-check-circle text-primary me-2"></i> {{ tip }}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    {% if not user.is_authenticated %}
+    <section class="mb-5">
+        <div class="card bg-primary text-white">
+            <div class="card-body p-4 text-center">
+                <h3 class="fw-bold mb-3">Ready to boost your productivity?</h3>
+                <p class="mb-4">Join MidCraft today and take control of your tasks and time.</p>
+                <a href="{% url 'register' %}" class="btn btn-light btn-lg">Get Started Now</a>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize progress circles when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effects to achievement cards
+        const achievementCards = document.querySelectorAll('.achievement-unlocked');
+        
+        achievementCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                const icon = this.querySelector('.achievement-icon i');
+                if (icon) {
+                    // Add additional animation class on hover
+                    if (icon.classList.contains('fa-star')) {
+                        icon.style.animationDuration = '1.5s';
+                    } else if (icon.classList.contains('fa-trophy')) {
+                        icon.style.animationDuration = '1s';
+                    } else if (icon.classList.contains('fa-fire')) {
+                        icon.style.animationDuration = '0.8s';
+                    }
+                }
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                const icon = this.querySelector('.achievement-icon i');
+                if (icon) {
+                    // Restore original animation speed
+                    if (icon.classList.contains('fa-star')) {
+                        icon.style.animationDuration = '3s';
+                    } else if (icon.classList.contains('fa-trophy')) {
+                        icon.style.animationDuration = '2s';
+                    } else if (icon.classList.contains('fa-fire')) {
+                        icon.style.animationDuration = '1.5s';
+                    }
+                }
+            });
+            
+            // Add a small "pop" effect on initial load for completed achievements
+            setTimeout(() => {
+                const icon = card.querySelector('.achievement-icon i');
+                if (icon) {
+                    icon.style.transform = 'scale(1.3)';
+                    setTimeout(() => {
+                        icon.style.transform = '';
+                    }, 300);
+                }
+            }, 500);
+        });
+
+        // Motivational Quotes
+        const motivationalQuotes = [
+            "The only way to do great work is to love what you do.",
+            "Success is not final, failure is not fatal: It is the courage to continue that counts.",
+            "Your time is limited, don't waste it living someone else's life.",
+            "The future belongs to those who believe in the beauty of their dreams.",
+            "Don't watch the clock; do what it does. Keep going.",
+            "The harder you work for something, the greater you'll feel when you achieve it.",
+            "Dream big and dare to fail.",
+            "What you get by achieving your goals is not as important as what you become by achieving your goals.",
+            "Believe you can and you're halfway there.",
+            "The only limit to our realization of tomorrow will be our doubts of today.",
+            "Don't wait for opportunity. Create it.",
+            "The past cannot be changed. The future is yet in your power.",
+            "Small daily improvements over time lead to stunning results.",
+            "The key to success is to start before you're ready.",
+            "It always seems impossible until it's done.",
+            "Your only limit is the amount of action you take.",
+            "The difference between ordinary and extraordinary is that little extra.",
+            "Don't stop when you're tired. Stop when you're done.",
+            "Focus on your goal. Don't look in any direction but ahead.",
+            "You are never too old to set another goal or to dream a new dream."
+        ];
+
+        const quoteElement = document.getElementById('motivationQuote');
+        let currentIndex = 0;
+
+        function rotateQuote() {
+            // Fade out
+            quoteElement.style.opacity = 0;
+            
+            setTimeout(() => {
+                // Change content
+                currentIndex = (currentIndex + 1) % motivationalQuotes.length;
+                quoteElement.textContent = motivationalQuotes[currentIndex];
+                
+                // Fade in
+                quoteElement.style.opacity = 1;
+            }, 1000);
+        }
+
+        // Set initial quote
+        quoteElement.textContent = motivationalQuotes[0];
+        
+        // Rotate every 2 minutes (120000 ms)
+        setInterval(rotateQuote, 120000);
+    });
+</script>
+{% endblock %} 
