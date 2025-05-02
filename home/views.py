@@ -5,11 +5,27 @@ from django.db.models import Count, Q
 from django.utils import timezone
 from datetime import timedelta
 from django.db import DatabaseError
+from django.db.models import Count
 
 def home(request):
     try:
         # User statistics
         total_users = User.objects.count()
+        
+        # Get top users based on completed tasks
+        top_users = User.objects.annotate(
+            completed_count=Count('task', filter=Q(task__completed=True))
+        ).order_by('-completed_count')[:3]
+
+        top_users_data = []
+        for user in top_users:
+            user_data = {
+                'username': user.username,
+                'completed_tasks': user.completed_count,
+                'profile_pic': user.profile.image.url if hasattr(user, 'profile') and user.profile.image else None,
+                'rank': len(top_users_data) + 1  # 1st, 2nd, 3rd
+            }
+            top_users_data.append(user_data)
         
         # Task statistics - only shown if user is authenticated
         task_stats = None
@@ -143,6 +159,7 @@ def home(request):
             'mentor_tasks': mentor_tasks,
             'productivity_tips': productivity_tips,
             'achievements': achievements,
+            'top_users': top_users_data,  # Add top users to context
         }
         
     except DatabaseError:
@@ -153,7 +170,8 @@ def home(request):
             'mentor_tasks': [],
             'productivity_tips': productivity_tips,
             'achievements': [],
-            'database_error': True
+            'database_error': True,
+            'top_users': [],
         }
     
     return render(request, 'home/home.html', context)

@@ -1,18 +1,26 @@
 /* Theme System CSS */
 :root {
     /* Default/Light Theme */
-    --primary-color: #4a6bdf;
-    --secondary-color: #6e40aa;
-    --background-color: #f8f9fa;
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --background-color: #ffffff;
     --card-background: #ffffff;
     --text-color: #212529;
     --text-muted: #6c757d;
-    --border-color: #e9ecef;
+    --border-color: #dee2e6;
     --accent-color: #28a745;
     --danger-color: #dc3545;
     --warning-color: #fd7e14;
     --shadow-color: rgba(0, 0, 0, 0.1);
     --hover-effect: translateY(-5px);
+    --hover-color: #f8f9fa;
+    --card-bg: #ffffff;
+    --calendar-day-bg: #ffffff;
+    --calendar-day-text: #212529;
+    --button-text: #ffffff;
+    --input-bg: #ffffff;
+    --input-text: #212529;
+    --link-color: #007bff;
 }
 
 /* Purple Theme */
@@ -49,18 +57,26 @@ body.theme-yellow {
 
 /* Dark Theme */
 body.theme-dark {
-    --primary-color: #bb86fc;
-    --secondary-color: #3700b3;
-    --background-color: #121212;
-    --card-background: #1e1e1e;
-    --text-color: #ffffff;
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --background-color: #212529;
+    --card-background: #343a40;
+    --text-color: #f8f9fa;
     --text-muted: #bbbbbb;
-    --border-color: #333333;
+    --border-color: #495057;
     --accent-color: #03dac6;
     --danger-color: #ff7597;
     --warning-color: #ffb74d;
     --shadow-color: rgba(0, 0, 0, 0.5);
     --hover-effect: translateY(-5px);
+    --hover-color: #343a40;
+    --card-bg: #343a40;
+    --calendar-day-bg: #343a40;
+    --calendar-day-text: #f8f9fa;
+    --button-text: #f8f9fa;
+    --input-bg: #495057;
+    --input-text: #f8f9fa;
+    --link-color: #0d6efd;
 }
 
 /* Apply theme colors to elements */
@@ -274,4 +290,142 @@ footer.bg-dark {
 .theme-preview.theme-dark {
     background: linear-gradient(135deg, #424242 0%, #212121 100%);
     border-bottom: 2px solid #bb86fc;
+}
+
+/* Calendar Specific Styles */
+[data-theme="dark"] .calendar {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .calendar td,
+[data-theme="dark"] .calendar th {
+    color: var(--calendar-day-text);
+    background-color: var(--calendar-day-bg);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .calendar .today {
+    background-color: var(--primary-color);
+    color: var(--button-text);
+}
+
+[data-theme="dark"] .calendar .has-tasks {
+    background-color: rgba(13, 110, 253, 0.2);
+    color: var(--calendar-day-text);
+}
+
+/* Button Styles */
+.btn {
+    color: var(--button-text);
+}
+
+[data-theme="dark"] .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--button-text);
+}
+
+[data-theme="dark"] .btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: var(--button-text);
+}
+
+/* Input Styles */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border-color: var(--border-color);
+}
+
+/* Card Styles */
+[data-theme="dark"] .card {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+/* Table Styles */
+[data-theme="dark"] .table {
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .table td,
+[data-theme="dark"] .table th {
+    border-color: var(--border-color);
+}
+
+/* Link Styles */
+[data-theme="dark"] a {
+    color: var(--link-color);
+}
+
+[data-theme="dark"] a:hover {
+    color: var(--primary-color);
+}
+
+/* Form Control Styles */
+[data-theme="dark"] .form-control {
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .form-control:focus {
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border-color: var(--primary-color);
+}
+
+/* Modal Styles */
+[data-theme="dark"] .modal-content {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+/* Dropdown Styles */
+[data-theme="dark"] .dropdown-menu {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .dropdown-item {
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .dropdown-item:hover {
+    background-color: var(--hover-color);
+    color: var(--text-color);
+}
+
+/* Alert Styles */
+[data-theme="dark"] .alert {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+/* Badge Styles */
+[data-theme="dark"] .badge {
+    background-color: var(--primary-color);
+    color: var(--button-text);
+}
+
+/* List Group Styles */
+[data-theme="dark"] .list-group-item {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+/* Progress Bar Styles */
+[data-theme="dark"] .progress {
+    background-color: var(--input-bg);
+}
+
+[data-theme="dark"] .progress-bar {
+    background-color: var(--primary-color);
+    color: var(--button-text);
 } 
