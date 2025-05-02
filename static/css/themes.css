@@ -21,6 +21,17 @@
     --input-bg: #ffffff;
     --input-text: #212529;
     --link-color: #007bff;
+    --button-primary-bg: #007bff;
+    --button-primary-text: #ffffff;
+    --button-secondary-bg: #6c757d;
+    --button-secondary-text: #ffffff;
+    --button-success-bg: #28a745;
+    --button-success-text: #ffffff;
+    --button-danger-bg: #dc3545;
+    --button-danger-text: #ffffff;
+    --button-warning-bg: #ffc107;
+    --button-warning-text: #212529;
+    --button-outline-text: #212529;
 }
 
 /* Purple Theme */
@@ -77,6 +88,17 @@ body.theme-dark {
     --input-bg: #495057;
     --input-text: #f8f9fa;
     --link-color: #0d6efd;
+    --button-primary-bg: #0d6efd;
+    --button-primary-text: #ffffff;
+    --button-secondary-bg: #6c757d;
+    --button-secondary-text: #ffffff;
+    --button-success-bg: #198754;
+    --button-success-text: #ffffff;
+    --button-danger-bg: #dc3545;
+    --button-danger-text: #ffffff;
+    --button-warning-bg: #ffc107;
+    --button-warning-text: #212529;
+    --button-outline-text: #f8f9fa;
 }
 
 /* Apply theme colors to elements */
@@ -97,14 +119,130 @@ body {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
 }
 
+.btn {
+    color: var(--button-text);
+    transition: all 0.3s ease;
+}
+
 .btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--button-primary-bg);
+    border-color: var(--button-primary-bg);
+    color: var(--button-primary-text);
 }
 
 .btn-primary:hover {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
+    background-color: var(--button-primary-bg);
+    filter: brightness(110%);
+    border-color: var(--button-primary-bg);
+}
+
+.btn-secondary {
+    background-color: var(--button-secondary-bg);
+    border-color: var(--button-secondary-bg);
+    color: var(--button-secondary-text);
+}
+
+.btn-secondary:hover {
+    background-color: var(--button-secondary-bg);
+    filter: brightness(110%);
+    border-color: var(--button-secondary-bg);
+}
+
+.btn-success {
+    background-color: var(--button-success-bg);
+    border-color: var(--button-success-bg);
+    color: var(--button-success-text);
+}
+
+.btn-success:hover {
+    background-color: var(--button-success-bg);
+    filter: brightness(110%);
+    border-color: var(--button-success-bg);
+}
+
+.btn-danger {
+    background-color: var(--button-danger-bg);
+    border-color: var(--button-danger-bg);
+    color: var(--button-danger-text);
+}
+
+.btn-danger:hover {
+    background-color: var(--button-danger-bg);
+    filter: brightness(110%);
+    border-color: var(--button-danger-bg);
+}
+
+.btn-warning {
+    background-color: var(--button-warning-bg);
+    border-color: var(--button-warning-bg);
+    color: var(--button-warning-text);
+}
+
+.btn-warning:hover {
+    background-color: var(--button-warning-bg);
+    filter: brightness(110%);
+    border-color: var(--button-warning-bg);
+}
+
+/* Outline Button Styles */
+.btn-outline-primary {
+    color: var(--button-primary-bg);
+    border-color: var(--button-primary-bg);
+    background-color: transparent;
+}
+
+.btn-outline-primary:hover {
+    color: var(--button-primary-text);
+    background-color: var(--button-primary-bg);
+    border-color: var(--button-primary-bg);
+}
+
+.btn-outline-secondary {
+    color: var(--button-secondary-bg);
+    border-color: var(--button-secondary-bg);
+    background-color: transparent;
+}
+
+.btn-outline-secondary:hover {
+    color: var(--button-secondary-text);
+    background-color: var(--button-secondary-bg);
+    border-color: var(--button-secondary-bg);
+}
+
+.btn-outline-success {
+    color: var(--button-success-bg);
+    border-color: var(--button-success-bg);
+    background-color: transparent;
+}
+
+.btn-outline-success:hover {
+    color: var(--button-success-text);
+    background-color: var(--button-success-bg);
+    border-color: var(--button-success-bg);
+}
+
+.btn-outline-danger {
+    color: var(--button-danger-bg);
+    border-color: var(--button-danger-bg);
+    background-color: transparent;
+}
+
+.btn-outline-danger:hover {
+    color: var(--button-danger-text);
+    background-color: var(--button-danger-bg);
+    border-color: var(--button-danger-bg);
+}
+
+.btn-outline-warning {
+    color: var(--button-warning-bg);
+    border-color: var(--button-warning-bg);
+    background-color: transparent;
+}
+
+.btn-outline-warning:hover {
+    color: var(--button-warning-text);
+    background-color: var(--button-warning-bg);
+    border-color: var(--button-warning-bg);
 }
 
 .bg-primary {
@@ -117,20 +255,6 @@ body {
 
 .text-muted {
     color: var(--text-muted) !important;
-}
-
-.btn-success {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
-}
-
-.btn-danger {
-    background-color: var(--danger-color);
-    border-color: var(--danger-color);
-}
-
-.text-danger {
-    color: var(--danger-color) !important;
 }
 
 /* Navbar adjustments for dark theme */
@@ -313,38 +437,6 @@ footer.bg-dark {
 [data-theme="dark"] .calendar .has-tasks {
     background-color: rgba(13, 110, 253, 0.2);
     color: var(--calendar-day-text);
-}
-
-/* Button Styles */
-.btn {
-    color: var(--button-text);
-}
-
-[data-theme="dark"] .btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    color: var(--button-text);
-}
-
-[data-theme="dark"] .btn-secondary {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
-    color: var(--button-text);
-}
-
-/* Input Styles */
-[data-theme="dark"] input,
-[data-theme="dark"] select,
-[data-theme="dark"] textarea {
-    background-color: var(--input-bg);
-    color: var(--input-text);
-    border-color: var(--border-color);
-}
-
-/* Card Styles */
-[data-theme="dark"] .card {
-    background-color: var(--card-bg);
-    border-color: var(--border-color);
 }
 
 /* Table Styles */
