@@ -14,7 +14,7 @@ def home(request):
         
         # Get top users based on completed tasks
         top_users = User.objects.annotate(
-            completed_count=Count('task', filter=Q(task__completed=True))
+            completed_count=Count('tasks', filter=Q(tasks__completed=True))
         ).order_by('-completed_count')[:3]
 
         top_users_data = []
