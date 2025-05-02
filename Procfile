@@ -1,1 +1,1 @@
-web: gunicorn mindcraft.wsgi --log-file - 
+web: gunicorn mindcraft.wsgi:application --log-file - 
